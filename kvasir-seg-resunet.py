@@ -36,12 +36,13 @@ class BCEDiceLoss(nn.Module):
         pred = inputs.view(-1)
         truth = target.view(-1)
         # BCE loss
-        bce_loss = nn.BCELoss()(pred, truth).double()
+        # bce_loss = nn.BCELoss()(pred, truth).double()
         # Dice Loss
         dice_coef = (2.0 * (pred * truth).double().sum() + 1) / (
             pred.double().sum() + truth.double().sum() + 1
         )
-        return bce_loss + (1 - dice_coef)
+        # return bce_loss + (1 - dice_coef)
+        return (1-dice_coef)
 
 def main():
     dataset_path="data/kvasir-seg-aug"
@@ -67,11 +68,14 @@ def main():
     lr_scheduler=torch.optim.lr_scheduler.StepLR(optimizer, step_size=20, gamma=0.1)
     
     # define dataloaders
-    train_dataloader=torch.utils.data.DataLoader(train_dataset, batch_size=4, shuffle=True)
-    validation_dataloader=torch.utils.data.DataLoader(validation_dataset, batch_size=4, shuffle=False)
+    train_dataloader=torch.utils.data.DataLoader(train_dataset, batch_size=64, shuffle=True)
+    validation_dataloader=torch.utils.data.DataLoader(validation_dataset, batch_size=64, shuffle=False)
 
     # train the model
-    for epoch in range(30):
+    num_epochs = 100
+    num_steps = num_epochs * len(train_dataloader)
+    pbar=tqdm(num_steps)
+    for epoch in range(num_epochs):
         model.train()
         for idx, batch in enumerate(train_dataloader):
             images, masks=batch
@@ -83,7 +87,9 @@ def main():
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
-            print("Epoch: %d, Batch: %d, Loss: %f" % (epoch, idx, loss.item()))
+            if idx % 10 == 0:
+                print("Epoch: %d, Batch: %d, Loss: %f" % (epoch, idx, loss.item()))
+            pbar.update(1)
         model.eval()
         with torch.no_grad():
             for idx, batch in enumerate(validation_dataloader):
@@ -93,8 +99,6 @@ def main():
                 print("Epoch: %d, Batch: %d, Loss: %f" % (epoch, idx, loss.item()))
         lr_scheduler.step()
     torch.save(model.state_dict(), "kvasir-seg-resunet.pt")
-
-    
 
 
 if __name__ == "__main__":
