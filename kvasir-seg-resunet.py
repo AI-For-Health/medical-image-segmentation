@@ -97,6 +97,9 @@ def main():
         with torch.no_grad():
             for idx, batch in enumerate(validation_dataloader):
                 images, masks=batch
+                # send the batch to GPU
+                images=images.cuda()
+                masks=masks.cuda()
                 outputs=model(images)
                 loss=loss_fn(outputs, masks)
                 losses.append(loss.item())
