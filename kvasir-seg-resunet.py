@@ -75,6 +75,7 @@ def main():
     num_epochs = 100
     num_steps = num_epochs * len(train_dataloader)
     pbar=tqdm(range(num_steps))
+    completed_steps=0
     for epoch in range(num_epochs):
         model.train()
         for idx, batch in enumerate(train_dataloader):
@@ -87,9 +88,10 @@ def main():
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
-            if idx % 10 == 0:
-                print("Epoch: %d, Batch: %d, Loss: %f" % (epoch, idx, loss.item()))
+            if idx % 100 == 0:
+                print("Epoch: %d, Completed Steps: %d, Dice Coefficient: %f" % (epoch, completed_steps, 1-loss.item()))
             pbar.update(1)
+            completed_steps+=1
         model.eval()
         losses=[]
         with torch.no_grad():
