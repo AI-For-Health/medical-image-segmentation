@@ -88,7 +88,7 @@ def main():
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
-            if idx % 100 == 0:
+            if completed_steps % 100 == 0:
                 print("Epoch: %d, Completed Steps: %d, Dice Coefficient: %f" % (epoch, completed_steps, 1-loss.item()))
             pbar.update(1)
             completed_steps+=1
