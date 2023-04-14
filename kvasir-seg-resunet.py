@@ -74,7 +74,7 @@ def main():
     # train the model
     num_epochs = 100
     num_steps = num_epochs * len(train_dataloader)
-    pbar=tqdm(num_steps)
+    pbar=tqdm(range(num_steps))
     for epoch in range(num_epochs):
         model.train()
         for idx, batch in enumerate(train_dataloader):
@@ -91,12 +91,14 @@ def main():
                 print("Epoch: %d, Batch: %d, Loss: %f" % (epoch, idx, loss.item()))
             pbar.update(1)
         model.eval()
+        losses=[]
         with torch.no_grad():
             for idx, batch in enumerate(validation_dataloader):
                 images, masks=batch
                 outputs=model(images)
                 loss=loss_fn(outputs, masks)
-                print("Epoch: %d, Batch: %d, Loss: %f" % (epoch, idx, loss.item()))
+                losses.append(loss.item())
+        print("Mean Dice Coefficient:", sum(losses)/len(losses))
         lr_scheduler.step()
     torch.save(model.state_dict(), "kvasir-seg-resunet.pt")
 
