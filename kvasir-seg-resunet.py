@@ -103,7 +103,7 @@ def main():
                 outputs=model(images)
                 loss=loss_fn(outputs, masks)
                 losses.append(loss.item())
-        print("Mean Dice Coefficient:", sum(losses)/len(losses))
+        print("Mean Dice Coefficient:", 1-sum(losses)/len(losses))
         lr_scheduler.step()
     torch.save(model.state_dict(), "kvasir-seg-resunet.pt")
 
