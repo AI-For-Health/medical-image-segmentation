@@ -54,6 +54,8 @@ def main():
 
     # define a model
     model=ResUnet(3)
+    # send the model to GPU
+    model=model.cuda()
 
     # define a loss function
     loss_fn=BCEDiceLoss()
@@ -73,6 +75,9 @@ def main():
         model.train()
         for idx, batch in enumerate(train_dataloader):
             images, masks=batch
+            # send the batch to GPU
+            images=images.cuda()
+            masks=masks.cuda()
             outputs=model(images)
             loss=loss_fn(outputs, masks)
             optimizer.zero_grad()
