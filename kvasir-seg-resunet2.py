@@ -90,7 +90,7 @@ def main():
             loss.backward()
             optimizer.step()
             if completed_steps % 100 == 0:
-                print("Epoch: %d, Completed Steps: %d, Dice Coefficient: %f" % (epoch, completed_steps, 1-loss.item()))
+                print("Epoch: %d, Completed Steps: %d, Loss: %f" % (epoch, completed_steps, loss.item()))
             pbar.update(1)
             completed_steps+=1
         model.eval()
