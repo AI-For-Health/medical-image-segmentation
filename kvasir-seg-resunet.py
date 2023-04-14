@@ -68,8 +68,8 @@ def main():
     lr_scheduler=torch.optim.lr_scheduler.StepLR(optimizer, step_size=20, gamma=0.1)
     
     # define dataloaders
-    train_dataloader=torch.utils.data.DataLoader(train_dataset, batch_size=32, shuffle=True)
-    validation_dataloader=torch.utils.data.DataLoader(validation_dataset, batch_size=32, shuffle=False)
+    train_dataloader=torch.utils.data.DataLoader(train_dataset, batch_size=16, shuffle=True)
+    validation_dataloader=torch.utils.data.DataLoader(validation_dataset, batch_size=16, shuffle=False)
 
     # train the model
     num_epochs = 100
